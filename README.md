@@ -12,12 +12,12 @@ page apps. It's not the greatest thing since sliced bread but I learned a lot.
 
 Here are some screenshots:
 
-![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/Screenshot1.png)
+![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/site/Screenshot1.png)
 ---
-![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/Screenshot2.png)
+![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/site/Screenshot2.png)
 ---
-![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/Screenshot3.png)
+![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/site/Screenshot3.png)
 ---
-![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/Screenshot4.png)
+![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/site/Screenshot4.png)
 ---
-![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/Screenshot5.png)
+![Screenshot](https://raw.githubusercontent.com/gabrielhora/kiji/master/site/Screenshot5.png)
