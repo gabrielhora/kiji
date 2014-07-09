@@ -1,0 +1,432 @@
+﻿<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.8">
+
+    <meta name="google-site-verification" content="4ix-FYREKF6NTSrhcWY7Js-hiBivNyscg4x_HfDKxGM" />
+    <meta name="description" content="kiji.io is a simple service that allows you to create a single article, actually as many single articles as you want" />
+    <meta name="keywords" content="article blog cms simple wordpress tumblr" />
+
+
+    <title>kiji.io</title>
+
+    <!--[if lt IE 9]>
+        <script>
+            window.location = '/noIE';
+        </script>
+    <![endif]-->
+
+    <link href='http://fonts.googleapis.com/css?family=Inconsolata:400,700' rel='stylesheet' type='text/css'>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.0/css/font-awesome.css" rel="stylesheet">
+
+    <!-- codemirror -->
+    <script src="codemirror/lib/codemirror.js"></script>
+    <script src="codemirror/addon/display/placeholder.js"></script>
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css"/>
+    <script src="codemirror/mode/markdown/markdown.js"></script>
+    <!-- end codemirror -->
+    
+    <link href="css/main.min.css" rel='stylesheet' type='text/css'>
+</head>
+<body>
+    <div id="public-loading"><span>Loading...</span></div>
+
+    <nav id="menu">
+        <h1>kiji.io</h1>
+    </nav>
+
+    <div id="content">
+
+        <div id="editor">
+
+            <div id="tabs">
+                <ul>
+                    <li><a data-bind="click: function () { Tab(0) }, css: { active: Tab() == 0 }" class="tab" href="#">Article</a></li>
+                    <li><a data-bind="click: function () { Tab(1) }, css: { active: Tab() == 1 }" class="tab" href="#">Options</a></li>
+                    <li><a data-bind="click: function () { Tab(2) }, css: { active: Tab() == 2 }" class="tab" href="#">Help</a></li>
+                    <li><a data-bind="click: function () { Tab(3) }, css: { active: Tab() == 3 }" class="tab" href="#">About</a></li>
+                    <span class="pull-right">
+                        <li>
+                            <span data-bind="if: Publishing">Publishing...
+                            </span>
+                            <span data-bind="ifnot: Publishing">
+                                <a id="publish-button" data-bind="click: Publish, text: PublishLabel" class="tab button" href="#">Publish</a>
+                            </span>
+                        </li>
+                    </span>
+                </ul>
+            </div>
+            <!-- END TABS -->
+
+            <!-- MESSAGES -->
+            <div id="message" data-bind="html: Message" style="display: none"></div>
+            <div id="success" data-bind="html: Success" style="display: none"></div>
+            <!-- END MESSAGES -->
+
+            <div class="container">
+
+                <div data-bind="fadeVisible: Tab() == 0">
+                    <input type="text" name="title" placeholder="The title ..." data-bind="value: Title, valueUpdate: 'afterkeydown'">
+                    <textarea id="codemirror_editor" data-bind="value: Markdown, valueUpdate: 'afterkeydown'" placeholder="... and the body"></textarea>
+                </div>
+                <!-- END POST -->
+
+                <div data-bind="fadeVisible: Tab() == 1">
+                    <dl data-bind="visible: PublicUrl() != ''">
+                        <dt>My URLs</dt>
+                        <dd>
+                            <label>Public <small>share it away!</small></label>
+                            <a data-bind="text: PublicUrl, attr: { href: PublicUrl }" target="_blank"></a>
+                            
+                            <!-- AddThis Button BEGIN -->
+                            <div class="addthis_toolbox addthis_default_style addthis_16x16_style">
+                                <a class="addthis_button_facebook"></a>
+                                <a class="addthis_button_twitter"></a>
+                                <a class="addthis_button_linkedin"></a>
+                                <a class="addthis_button_google_plusone_share"></a>
+                                <a class="addthis_button_reddit"></a>
+                                <a class="addthis_button_hackernews"></a>
+                                <a class="addthis_button_email"></a>
+                                <a class="addthis_button_compact"></a><a class="addthis_counter addthis_bubble_style"></a>
+                            </div>
+                            <!-- AddThis Button END -->
+
+                            <label>Private <small>keep this for yourself</small></label>
+                            <a data-bind="text: PrivateUrl, attr: { href: PrivateUrl }"></a>
+                        </dd>
+                    </dl>
+
+                    <dl>
+                        <dt>About you</dt>
+                        <p>
+                            Would you like to provide some information about you?<br>
+                            They are <b>not</b> required, you can leave them all blank if you want to be anonymous.
+                        </p>
+
+                        <dd>
+                            <form id="aboutyou-form" data-validate="parsley">
+                                <div>
+                                    <div>
+                                        <label for="name">Name</label>
+                                        <input type="text" name="name" class="control" placeholder="Name" data-bind="value: Name, valueUpdate: 'afterkeydown'">
+                                    </div>
+                                    <div>
+                                        <label for="email">Email</label>
+                                        <input type="text" name="email" class="control" placeholder="Email"
+                                            data-type="email" data-trigger="change" data-bind="value: Email, valueUpdate: 'afterkeydown'">
+                                        <small>Caution! This will be publicly available, so you might get some spam from crawlers!</small>
+                                    </div>
+                                    <div>
+                                        <label for="site">Site</label>
+                                        <input type="text" name="site" class="control" placeholder="Site"
+                                            data-bind="value: Site, valueUpdate: 'afterkeydown'" data-type="url" data-trigger="change">
+                                    </div>
+                                    <div>
+                                        <label for="twitter">Twitter</label>
+                                        <input type="text" name="site" class="control" placeholder="username" data-bind="value: Twitter, valueUpdate: 'afterkeydown'">
+                                        <small>Just the username, we will add the right url for you.</small>
+                                    </div>
+                                </div>
+                            </form>
+                        </dd>
+
+                        <dt>Little help for the search engines</dt>
+
+                        <p>
+                            You can provide a small description and a set of keywords
+                                to help Google and other search engines find this page.
+                        </p>
+
+                        <dd>
+                            <div>
+                                <div>
+                                    <label for="description">Description</label>
+                                    <input type="text" name="description" class="control" placeholder="Description" data-bind="value: Description, valueUpdate: 'afterkeydown'">
+                                    <small>If you know HTML, this will be inside the meta "description" tag ...</small>
+                                </div>
+                                <div>
+                                    <label for="keywords">Keywords</label>
+                                    <input type="text" name="keywords" class="control" placeholder="Keywords" data-bind="value: Keywords, valueUpdate: 'afterkeydown'">
+                                    <small>... and this inside meta "keywords" tag.</small>
+                                </div>
+                            </div>
+                        </dd>
+
+                        <dt>Enable comments (by <a href="http://disqus.com" target="_blank">Disqus</a>)</dt>
+
+                        <p>
+                            We integrate your post with Disqus to provide a better platform for discussions.
+                        </p>
+
+                        <dd>
+                            <label>
+                                <input type="checkbox" data-bind="checked: CommentsEnabled">
+                                Yes, please!
+                            </label>
+                        </dd>
+                    </dl>
+
+                    <a data-bind="visible: Secret() != '', click: Delete" href="#" class="delete-article danger">Delete article</a>
+                </div>
+                <!-- END CONFIG -->
+
+                <div data-bind="fadeVisible: Tab() == 2" id="help">
+
+                    <h1>Markdown</h1>
+                    <p>Did you know that you can use markdown to format your article?</p>
+
+                    <small>Something to notice is that you can't use HTML inside Markdown here at kiji.io, for security reasons we disabled that.
+                        You can find more information about Markdown <a href="http://daringfireball.net/projects/markdown/basics" target="_blank">here</a>.
+                        Some of the examples bellow were taken from this great project called <a href="http://markdown-here.com/" target="_blank">Markdown Here</a>.
+                    </small>
+
+                    <dl>
+                        <dt>Headers</dt>
+                        <dd>
+                            <pre>
+# Header 1
+## Header 2
+...
+###### Header 6</pre>
+                        </dd>
+
+                        <dt>Emphasis</dt>
+                        <dd>
+                            <pre>
+You can create italics with *asterisks* or _underscores_
+Bold text is similar, **double asterisks** or __double underscores__
+For strikethrough you use two tildes ~~like this~~</pre>
+                        </dd>
+
+                        <dt>Lists</dt>
+                        <dd>
+                            <pre>
+1. Lists are
+2. very simple
+3. just create numbered lines
+4. like this
+                                    
+Unordered lists can use *, - or +                                    
+
+- Item 1
+* Item 2
++ Item 3
+                                    
+You can mix and match list types</pre>
+                        </dd>
+
+                        <dt>Links</dt>
+                        <dd>
+                            <pre>
+[Google Website](https://www.google.com)
+
+[This is a reference-style link][some reference text]
+
+[You can use numbers for reference links too][1]
+
+This is not a link
+
+[some reference text]: http://kiji.io
+[1]: http://slashdot.org</pre>
+                        </dd>
+
+                        <dt>Images</dt>
+                        <dd>
+                            <pre>
+Inline-style (very much like links):
+![alternative text](http://example.com/funny_cat.gif "This is the title")
+
+Reference-style: 
+![alternative text][funny cat number 2]
+
+[funny cat number 2]: http://example.com/even_funnier_cat.gif "The Cat"
+</pre>
+                        </dd>
+
+                        <dt>For coders</dt>
+                        <dd>
+                            <pre>
+You can use backticks for `inline code`
+
+Or you can use triple backticks to and specify a language for highlighting.
+                                    
+```python
+greetings = 'Hello World'
+print(greetings)
+```
+                                    
+```javascript
+var greetings = 'Hello World';
+alert(greetings);
+```</pre>
+                        </dd>
+
+                        <dt>Tables</dt>
+                        <dd>
+                            <pre>
+Colons can be used to align columns.
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |</pre>
+                        </dd>
+
+                        <dt>Blockquotes</dt>
+                        <dd>
+                            <pre>
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+> Donec fermentum, turpis sit amet iaculis sagittis, nisi ipsum convallis lacus. 
+> Sed sit amet porta erat. Phasellus luctus enim turpis, eu tempor purus convallis nec. 
+> Quisque sapien sapien, porttitor ac pretium ac, placerat sed diam.</pre>
+                        </dd>
+
+                        <dt>Horizontal Rule</dt>
+                        <dd>
+                            <pre>
+Three or more
+
+---
+
+hyphens
+
+***
+
+asterisks
+                                    
+___
+
+or underscores</pre>
+                        </dd>
+
+                    </dl>
+
+                    <h1>Keyboard Shortcuts</h1>
+                    <dl class="dl-horizontal">
+                        <dt>Ctrl + S</dt>
+                        <dd>Publish/Save the article</dd>
+                        <dt>Ctrl + F</dt>
+                        <dd>Toggle fullscreen mode</dd>
+                        <dt>Ctrl + 1</dt>
+                        <dd>Change to the 'Post' tab</dd>
+                        <dt>Ctrl + 2</dt>
+                        <dd>Change to the 'Options' tab</dd>
+                        <dt>Ctrl + 3</dt>
+                        <dd>Change to the 'Help' tab</dd>
+                        <dt>Ctrl + 4</dt>
+                        <dd>Change to the 'About' tab</dd>
+                    </dl>
+
+                </div>
+                <!-- END HELP -->
+
+                <div data-bind="fadeVisible: Tab() == 3" id="about">
+                    <h1>Welcome to kiji.io</h1>
+                    <p>kiji.io is a simple service that allows you to create a single article, actually as many single articles as you want. It's very easy to use, simply access <a href="http://kiji.io">kiji.io</a> and start typing.</p>
+                    <p>Why would you want to use something like this? Well, maybe you don't have a blog, you don't want the commitment that it is to create one, and have that obligation to keep things updated. Or you do have a blog, but your blog is about politics or technology and all those serious stuff, but just this once you want to write something about that movie you saw, or that product you bought and want to share your opinion with some friends.</p>
+                    <p>We wanted to create a stress free place where you can just come and write! And then you can share it with your friends, have a comments section where you can interact with the world, you can even be totally anonymous if you want (soon we will provide some means for you to share you anonymous work).</p>
+                    <p>We think we created the perfect platform for all that! Think of <a href="http://kiji.io">kiji.io</a> as an extension of you social networks or your blog, where you can share a more elaborated opinion. It is not intended to replace your blog or other tool you use, but to complement them, and give you a much simpler way to express yourself.</p>
+                    <p>Come and see, it's really that easy! Just go to <a href="//kiji.io">kiji.io</a>.</p>
+                    <p>
+						- the kiji.io team<br/>
+						<small>tweet <a href="//twitter.com/kijiio" target="_blank">@kijiio</a> or email <a href="mailto:kiji.io@kiji.io">kiji.io@kiji.io</a> us!</small>
+					</p>
+                </div>
+                <!-- END MARKDOWN -->
+
+                <div data-bind="fadeVisible: Tab() == 4">
+                    <h1 data-bind="text: PublishStatus"></h1>
+
+                    <dl>
+                        <dt>Public URL</dt>
+                        <dd>
+                            <a data-bind="text: PublicUrl, attr: { href: PublicUrl }" target="_blank"></a>
+                            <p>Go on and share this URL with the world!</p>
+
+                            <!-- AddThis Button BEGIN -->
+                            <div class="addthis_toolbox addthis_default_style addthis_32x32_style">
+                                <a class="addthis_button_facebook"></a>
+                                <a class="addthis_button_twitter"></a>
+                                <a class="addthis_button_linkedin"></a>
+                                <a class="addthis_button_google_plusone_share"></a>
+                                <a class="addthis_button_reddit"></a>
+                                <a class="addthis_button_hackernews"></a>
+                                <a class="addthis_button_email"></a>
+                                <a class="addthis_button_compact"></a><a class="addthis_counter addthis_bubble_style"></a>
+                            </div>
+                            <!-- AddThis Button END -->
+                        </dd>
+
+                        <dt>Your Private URL</dt>
+                        <dd>
+                            <a data-bind="text: PrivateUrl, attr: { href: PrivateUrl }"></a>
+                            <p>
+                                <b>Bookmark</b> this URL and do <b>NOT</b> share it!
+                                <br>
+                                It's only through this address that you can change these configurations later.
+                            </p>
+                        </dd>
+                    </dl>
+                </div>
+                <!-- END PUBLISHED -->
+
+            </div>
+            <!-- END CONTAINER -->
+
+        </div>
+
+        <div id="preview">
+
+            <div class="container" data-bind="visible: ShowWelcome()">
+                <h1 class="title">Welcome to kiji.io</h1>
+                <div class="container content">
+                    <p>
+                        kiji.io is a simple service that allows you to create a single article, actually as many single articles as you want. It's very easy to use, 
+                            just start typing here on the left. You create your article and share it with your friends at Twitter, Facebook, your blog, or wherever...
+                            <a href="#" data-bind="click: function () { Tab(3) }">more</a>
+                    </p>
+
+                    <p>
+                        <div class="home-box">
+                            <i class="icon-pencil"></i>
+                            <p>A very simple and easy way to write what is on your mind.</p>
+                        </div>
+                        <div class="home-box border">
+                            <i class="icon-align-left"></i>
+                            <p>You can use <a href="#" data-bind="click: function () { Tab(2) }">Markdown</a> to create beautiful and organized articles.</p>
+                        </div>
+                        <div class="home-box border">
+                            <i class="icon-coffee"></i>
+                            <p>No distractions, no blinking banners, this a very quiet place.</p>
+                        </div>
+                    </p>
+                </div>
+            </div>
+            <!-- END BEGINNING -->
+
+
+            <h1 class="title" data-bind="text: Title, visible: Title() != ''"></h1>
+
+            <div id="footer" class="container" data-bind="visible: Title() != '' || Markdown() != ''">
+                <p>
+                    <span data-bind="html: By"></span>
+                </p>
+                <p>
+                    <span data-bind="html: SiteAndTwitter"></span>
+                </p>
+            </div>
+
+            <div class="container content" id="buffer1">Loading ...</div>
+            <div class="container content" id="buffer2" style="display: none;"></div>
+        </div>
+        <!-- END PREVIEW -->
+
+    
+
+    <script src="/js/main.min.js"></script>
+    <script src="/js/editor.min.js"></script>
+    <script src="/js/index.min.js"></script>
+</body>
+</html>
